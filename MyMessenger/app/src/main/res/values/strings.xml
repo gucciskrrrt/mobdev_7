@@ -1,0 +1,35 @@
+<resources>
+    <string name="app_name">MyMessenger</string>
+    <string name="feed">Лента</string>
+    <string name="profile">Профиль</string>
+    <string name="settings">Настройки</string>
+    <string name="feed_title">Новостная лента</string>
+    <string name="feed_subtitle">Все последние обновления</string>
+    <string name="profile_title">Профиль</string>
+    <string name="profile_name">Иван Иванов</string>
+    <string name="profile_email">ivan.ivanov@example.com</string>
+    <string name="profile_status">В сети</string>
+    <string name="settings_title">Настройки</string>
+    <string name="dark_theme">Темная тема</string>
+
+    <string name="feed_placeholder_title">Добро пожаловать!</string>
+    <string name="feed_placeholder_text">Здесь будет отображаться лента новостей и сообщений</string>
+
+    <string name="avatar_initials">ИИ</string>
+    <string name="profile_name_label">ИМЯ</string>
+    <string name="profile_email_label">EMAIL</string>
+    <string name="profile_status_label">СТАТУС</string>
+
+    <string name="appearance">ВНЕШНИЙ ВИД</string>
+    <string name="theme_description">Включите для комфортной работы в темное время суток</string>
+    <string name="about_app">О ПРИЛОЖЕНИИ</string>
+    <string name="version">Версия 1.0</string>
+
+    <string name="news_author_1">Команда разработки</string>
+    <string name="news_time_1">2 часа назад</string>
+    <string name="news_text_1">Мы рады представить вам новую версию приложения! Добавлена поддержка тёмной темы и улучшен интерфейс.</string>
+
+    <string name="news_author_2">Система уведомлений</string>
+    <string name="news_time_2">5 часов назад</string>
+    <string name="news_text_2">Ваши друзья активны в сети! Не забудьте проверить новые сообщения и обновления в профиле.</string>
+</resources>
