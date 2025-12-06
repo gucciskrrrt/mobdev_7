@@ -30,9 +30,9 @@ app/src/main/java/com/example/mymessenger/
 ├── MainActivity.kt
 ├── FeedFragment.kt
 ├── ProfileFragment.kt
-├── ProfileViewModel.kt      ⭐ MVVM
+├── ProfileViewModel.kt      
 ├── SettingsFragment.kt
-└── SettingsViewModel.kt     ⭐ MVVM
+└── SettingsViewModel.kt    
 ```
 
 ## Сборка
