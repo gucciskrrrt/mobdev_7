@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/nav_graph"
+    app:startDestination="@id/feedFragment">
+
+    <fragment
+        android:id="@+id/feedFragment"
+        android:name="com.example.mymessenger.FeedFragment"
+        android:label="@string/feed" />
+
+    <fragment
+        android:id="@+id/profileFragment"
+        android:name="com.example.mymessenger.ProfileFragment"
+        android:label="@string/profile" />
+
+    <fragment
+        android:id="@+id/settingsFragment"
+        android:name="com.example.mymessenger.SettingsFragment"
+        android:label="@string/settings" />
+
+</navigation>
+
