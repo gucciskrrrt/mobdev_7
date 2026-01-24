@@ -8,7 +8,7 @@ import com.example.mymessenger.data.model.Message
 
 @Database(
     entities = [Message::class],
-    version = 1,
+    version = 3,
     exportSchema = false
 )
 abstract class AppDatabase : RoomDatabase() {
@@ -21,13 +21,25 @@ abstract class AppDatabase : RoomDatabase() {
 
         fun getDatabase(context: Context): AppDatabase {
             return INSTANCE ?: synchronized(this) {
-                val instance = Room.databaseBuilder(
-                    context.applicationContext,
-                    AppDatabase::class.java,
-                    "messenger_database"
-                )
-                    .fallbackToDestructiveMigration()
-                    .build()
+                val instance = try {
+                    Room.databaseBuilder(
+                        context.applicationContext,
+                        AppDatabase::class.java,
+                        "messenger_database"
+                    )
+                        .fallbackToDestructiveMigration()
+                        .build()
+                } catch (e: Exception) {
+                    // Если не удалось создать БД, пытаемся пересоздать
+                    context.applicationContext.deleteDatabase("messenger_database")
+                    Room.databaseBuilder(
+                        context.applicationContext,
+                        AppDatabase::class.java,
+                        "messenger_database"
+                    )
+                        .fallbackToDestructiveMigration()
+                        .build()
+                }
                 INSTANCE = instance
                 instance
             }

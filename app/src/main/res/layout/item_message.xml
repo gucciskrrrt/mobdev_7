@@ -9,7 +9,7 @@
     android:layout_marginEnd="16dp"
     android:layout_marginBottom="8dp"
     app:cardCornerRadius="12dp"
-    app:cardElevation="2dp"
+    app:cardElevation="4dp"
     app:strokeWidth="0dp">
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -17,55 +17,81 @@
         android:layout_height="wrap_content"
         android:padding="16dp">
 
-        <TextView
-            android:id="@+id/text_message_id"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textColor="@color/text_secondary"
-            android:textSize="12sp"
-            android:textStyle="bold"
+        <com.google.android.material.imageview.ShapeableImageView
+            android:id="@+id/image_avatar"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:scaleType="centerCrop"
+            android:background="@color/text_secondary"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            tools:text="#123" />
+            app:shapeAppearanceOverlay="@style/CircleImageView"
+            tools:src="@tools:sample/avatars" />
 
         <TextView
             android:id="@+id/text_message_name"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginTop="4dp"
+            android:layout_marginStart="12dp"
+            android:ellipsize="end"
+            android:maxLines="1"
             android:textColor="@color/text_primary"
             android:textSize="16sp"
             android:textStyle="bold"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/text_message_id"
-            tools:text="Message Title" />
+            app:layout_constraintEnd_toStartOf="@id/button_like"
+            app:layout_constraintStart_toEndOf="@id/image_avatar"
+            app:layout_constraintTop_toTopOf="@id/image_avatar"
+            tools:text="John Doe" />
 
         <TextView
             android:id="@+id/text_message_email"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginTop="4dp"
+            android:layout_marginStart="12dp"
+            android:ellipsize="end"
+            android:maxLines="1"
             android:textColor="@color/text_secondary"
-            android:textSize="14sp"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
+            android:textSize="12sp"
+            app:layout_constraintEnd_toStartOf="@id/button_like"
+            app:layout_constraintStart_toEndOf="@id/image_avatar"
             app:layout_constraintTop_toBottomOf="@id/text_message_name"
             tools:text="user@example.com" />
+
+        <ImageButton
+            android:id="@+id/button_like"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:background="?attr/selectableItemBackgroundBorderless"
+            android:contentDescription="@string/like_button"
+            android:src="@drawable/ic_heart_outline"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:tint="@color/text_secondary" />
 
         <TextView
             android:id="@+id/text_message_body"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
+            android:layout_marginTop="12dp"
             android:textColor="@color/text_primary"
             android:textSize="14sp"
+            android:lineSpacingMultiplier="1.2"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/text_message_email"
+            app:layout_constraintTop_toBottomOf="@id/image_avatar"
             tools:text="This is a sample message body that will be displayed in the card view." />
+
+        <TextView
+            android:id="@+id/text_message_id"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:textColor="@color/text_secondary"
+            android:textSize="11sp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/text_message_body"
+            tools:text="#123" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
 </com.google.android.material.card.MaterialCardView>
-

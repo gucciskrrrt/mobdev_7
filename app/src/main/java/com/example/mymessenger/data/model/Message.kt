@@ -14,14 +14,22 @@ data class Message(
     val postId: Int,
 
     @SerializedName("name")
-    val name: String,
+    val name: String?,
 
     @SerializedName("email")
-    val email: String,
+    val email: String?,
 
     @SerializedName("body")
-    val body: String,
+    val body: String?,
 
-    val timestamp: Long = System.currentTimeMillis()
-)
+    val timestamp: Long = System.currentTimeMillis(),
+
+    val isLiked: Boolean = false,
+
+    val avatarUrl: String? = null
+) {
+    fun getAvatarUrlGenerated(): String {
+        return "https://i.pravatar.cc/150?u=${email ?: "default"}"
+    }
+}
 

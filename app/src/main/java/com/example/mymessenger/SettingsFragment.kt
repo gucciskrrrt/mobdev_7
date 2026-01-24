@@ -37,11 +37,6 @@ class SettingsFragment : Fragment() {
 
         setupObservers()
         setupListeners()
-
-        // Инициализируем состояние из текущей темы
-        val currentMode = AppCompatDelegate.getDefaultNightMode()
-        val isDark = currentMode == AppCompatDelegate.MODE_NIGHT_YES
-        viewModel.setDarkTheme(isDark)
     }
 
     private fun setupObservers() {

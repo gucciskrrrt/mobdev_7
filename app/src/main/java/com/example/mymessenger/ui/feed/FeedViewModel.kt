@@ -10,12 +10,15 @@ import com.example.mymessenger.data.model.Message
 import com.example.mymessenger.data.remote.RetrofitClient
 import com.example.mymessenger.data.repository.MessageRepository
 import com.example.mymessenger.data.repository.Resource
+import com.example.mymessenger.utils.NetworkConnectivityObserver
+import com.example.mymessenger.utils.NetworkStatus
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 
 class FeedViewModel(application: Application) : AndroidViewModel(application) {
 
     private val repository: MessageRepository
+    private val networkObserver: NetworkConnectivityObserver
 
     private val _messages = MutableLiveData<List<Message>>()
     val messages: LiveData<List<Message>> = _messages
@@ -29,17 +32,19 @@ class FeedViewModel(application: Application) : AndroidViewModel(application) {
     private val _successMessage = MutableLiveData<String?>()
     val successMessage: LiveData<String?> = _successMessage
 
+    private val _networkStatus = MutableLiveData<NetworkStatus>()
+    val networkStatus: LiveData<NetworkStatus> = _networkStatus
+
     init {
         val database = AppDatabase.getDatabase(application)
         val messageDao = database.messageDao()
         val apiService = RetrofitClient.apiService
 
         repository = MessageRepository(messageDao, apiService, application)
+        networkObserver = NetworkConnectivityObserver(application)
 
-        // Подписываемся на изменения в базе данных
         observeMessages()
-
-        // Загружаем данные при инициализации
+        observeNetworkStatus()
         refreshMessages()
     }
 
@@ -47,6 +52,17 @@ class FeedViewModel(application: Application) : AndroidViewModel(application) {
         viewModelScope.launch {
             repository.getMessagesFromDatabase().collectLatest { messageList ->
                 _messages.value = messageList
+            }
+        }
+    }
+
+    private fun observeNetworkStatus() {
+        viewModelScope.launch {
+            networkObserver.observe().collectLatest { status ->
+                _networkStatus.value = status
+                if (status == NetworkStatus.Available && _messages.value.isNullOrEmpty()) {
+                    refreshMessages()
+                }
             }
         }
     }
@@ -62,20 +78,28 @@ class FeedViewModel(application: Application) : AndroidViewModel(application) {
                     _successMessage.value = "Сообщения обновлены (${result.data?.size ?: 0})"
                 }
                 is Resource.Error -> {
-                    _errorMessage.value = result.message
+                    if (result.data != null && result.data.isNotEmpty()) {
+                        _successMessage.value = result.message
+                    } else {
+                        _errorMessage.value = result.message
 
-                    // Проверяем, есть ли данные в локальной базе
-                    val count = repository.getMessagesCount()
-                    if (count > 0) {
-                        _successMessage.value = "Загружены данные из кэша ($count)"
+                        val count = repository.getMessagesCount()
+                        if (count > 0) {
+                            _successMessage.value = "Показаны данные из кэша ($count)"
+                        }
                     }
                 }
                 is Resource.Loading -> {
-                    // Обрабатывается через _isLoading
                 }
             }
 
             _isLoading.value = false
+        }
+    }
+
+    fun toggleLike(message: Message) {
+        viewModelScope.launch {
+            repository.toggleLike(message)
         }
     }
 
@@ -87,4 +111,3 @@ class FeedViewModel(application: Application) : AndroidViewModel(application) {
         _successMessage.value = null
     }
 }
-

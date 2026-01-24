@@ -5,13 +5,15 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
+import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.mymessenger.databinding.FragmentFeedBinding
 import com.example.mymessenger.ui.feed.FeedViewModel
 import com.example.mymessenger.ui.feed.MessageAdapter
+import com.example.mymessenger.utils.NetworkStatus
+import com.google.android.material.snackbar.Snackbar
 
 class FeedFragment : Fragment() {
     private var _binding: FragmentFeedBinding? = null
@@ -40,12 +42,15 @@ class FeedFragment : Fragment() {
         Log.d("FeedFragment", "onViewCreated")
 
         setupRecyclerView()
+        setupSwipeRefresh()
         setupObservers()
         setupListeners()
     }
 
     private fun setupRecyclerView() {
-        messageAdapter = MessageAdapter()
+        messageAdapter = MessageAdapter { message ->
+            viewModel.toggleLike(message)
+        }
         binding.recyclerMessages.apply {
             adapter = messageAdapter
             layoutManager = LinearLayoutManager(requireContext())
@@ -53,13 +58,20 @@ class FeedFragment : Fragment() {
         }
     }
 
+    private fun setupSwipeRefresh() {
+        binding.swipeRefresh.setColorSchemeColors(
+            ContextCompat.getColor(requireContext(), R.color.primary)
+        )
+        binding.swipeRefresh.setOnRefreshListener {
+            viewModel.refreshMessages()
+        }
+    }
+
     private fun setupObservers() {
-        // Observe messages
         viewModel.messages.observe(viewLifecycleOwner) { messages ->
             Log.d("FeedFragment", "Messages updated: ${messages.size}")
             messageAdapter.submitList(messages)
 
-            // Show/hide empty state
             if (messages.isEmpty() && viewModel.isLoading.value != true) {
                 binding.textEmptyState.visibility = View.VISIBLE
                 binding.recyclerMessages.visibility = View.GONE
@@ -69,34 +81,66 @@ class FeedFragment : Fragment() {
             }
         }
 
-        // Observe loading state
         viewModel.isLoading.observe(viewLifecycleOwner) { isLoading ->
-            binding.progressBar.visibility = if (isLoading) View.VISIBLE else View.GONE
-            binding.buttonRefresh.isEnabled = !isLoading
+            binding.swipeRefresh.isRefreshing = isLoading
+            binding.progressBar.visibility = if (isLoading && messageAdapter.itemCount == 0) {
+                View.VISIBLE
+            } else {
+                View.GONE
+            }
+            binding.fabRefresh.isEnabled = !isLoading
         }
 
-        // Observe error messages
         viewModel.errorMessage.observe(viewLifecycleOwner) { error ->
             error?.let {
-                Toast.makeText(requireContext(), it, Toast.LENGTH_LONG).show()
+                showSnackbar(it, isError = true)
                 viewModel.clearErrorMessage()
             }
         }
 
-        // Observe success messages
         viewModel.successMessage.observe(viewLifecycleOwner) { success ->
             success?.let {
-                Toast.makeText(requireContext(), it, Toast.LENGTH_SHORT).show()
+                showSnackbar(it, isError = false)
                 viewModel.clearSuccessMessage()
+            }
+        }
+
+        viewModel.networkStatus.observe(viewLifecycleOwner) { status ->
+            when (status) {
+                NetworkStatus.Available -> {
+                    binding.textNetworkStatus.visibility = View.GONE
+                }
+                NetworkStatus.Unavailable, NetworkStatus.Lost -> {
+                    binding.textNetworkStatus.visibility = View.VISIBLE
+                    binding.textNetworkStatus.text = getString(R.string.network_disconnected)
+                    binding.textNetworkStatus.setTextColor(
+                        ContextCompat.getColor(requireContext(), R.color.error)
+                    )
+                }
+                NetworkStatus.Losing -> {
+                    binding.textNetworkStatus.visibility = View.VISIBLE
+                    binding.textNetworkStatus.text = "Соединение нестабильно"
+                    binding.textNetworkStatus.setTextColor(
+                        ContextCompat.getColor(requireContext(), R.color.warning)
+                    )
+                }
             }
         }
     }
 
     private fun setupListeners() {
-        binding.buttonRefresh.setOnClickListener {
-            Log.d("FeedFragment", "Refresh button clicked")
+        binding.fabRefresh.setOnClickListener {
+            Log.d("FeedFragment", "FAB refresh clicked")
             viewModel.refreshMessages()
         }
+    }
+
+    private fun showSnackbar(message: String, isError: Boolean) {
+        val snackbar = Snackbar.make(binding.root, message, Snackbar.LENGTH_SHORT)
+        if (isError) {
+            snackbar.setBackgroundTint(ContextCompat.getColor(requireContext(), R.color.error))
+        }
+        snackbar.show()
     }
 
     override fun onDestroyView() {
@@ -110,4 +154,3 @@ class FeedFragment : Fragment() {
         Log.d("FeedFragment", "onDestroy")
     }
 }
-

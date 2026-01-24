@@ -10,6 +10,9 @@ interface MessageDao {
     @Query("SELECT * FROM messages ORDER BY timestamp DESC")
     fun getAllMessages(): Flow<List<Message>>
 
+    @Query("SELECT * FROM messages ORDER BY timestamp DESC")
+    suspend fun getAllMessagesOnce(): List<Message>
+
     @Query("SELECT * FROM messages WHERE id = :id")
     suspend fun getMessageById(id: Int): Message?
 
@@ -27,5 +30,11 @@ interface MessageDao {
 
     @Query("SELECT COUNT(*) FROM messages")
     suspend fun getMessagesCount(): Int
+
+    @Query("UPDATE messages SET isLiked = :isLiked WHERE id = :messageId")
+    suspend fun updateLikeStatus(messageId: Int, isLiked: Boolean)
+
+    @Update
+    suspend fun updateMessage(message: Message)
 }
 

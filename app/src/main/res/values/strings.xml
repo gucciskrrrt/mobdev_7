@@ -1,9 +1,9 @@
 <resources>
-    <string name="app_name">MyMessenger</string>
+    <string name="app_name">MIN</string>
     <string name="feed">Лента</string>
     <string name="profile">Профиль</string>
     <string name="settings">Настройки</string>
-    <string name="feed_title">Новостная лента</string>
+    <string name="feed_title">Лента</string>
     <string name="feed_subtitle">Все последние обновления</string>
     <string name="profile_title">Профиль</string>
     <string name="profile_name">Иван Иванов</string>
@@ -36,4 +36,13 @@
     <string name="profile_name_hint">Введите имя</string>
     <string name="profile_status_hint">Введите статус</string>
     <string name="save_button">Сохранить</string>
+
+    <string name="like_button">Нравится</string>
+    <string name="refresh_messages">Обновить сообщения</string>
+    <string name="notification_channel_name">Синхронизация</string>
+    <string name="notification_channel_description">Уведомления о синхронизации данных</string>
+    <string name="notification_sync_title">Синхронизация</string>
+    <string name="notification_sync_success">Новые данные получены</string>
+    <string name="network_connected">Подключение восстановлено</string>
+    <string name="network_disconnected">Нет подключения к интернету</string>
 </resources>
